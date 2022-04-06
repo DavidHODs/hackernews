@@ -12,7 +12,14 @@ import (
 )
 
 func (r *mutationResolver) CreateLink(ctx context.Context, input model.NewLink) (*model.Link, error) {
-	panic(fmt.Errorf("not implemented"))
+	var link model.Link
+	var user model.User  
+	link.Address = input.Address
+	link.Title = input.Title
+	user.Name = "test user"
+	link.User = &user
+
+	return &link, nil
 }
 
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (string, error) {
@@ -35,7 +42,19 @@ func (r *queryResolver) Links(ctx context.Context) ([]*model.Link, error) {
 		User: &model.User{Name: "owner"},
 	}
 
-	links = append(links, &dummyLink)
+	dummyLink2 := model.Link {
+		Title: "second dummy link",
+		Address: "https://dummy1.org",
+		User: &model.User{Name: "admin"},
+	}
+
+	dummyLink3 := model.Link {
+		Title: "third dummy link",
+		Address: "https://dummy2.org",
+		User: &model.User{Name: "user"},
+	}
+
+	links = append(links, &dummyLink, &dummyLink2, &dummyLink3)
 	return links, nil
 }
 

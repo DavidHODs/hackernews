@@ -6,21 +6,23 @@ package graph
 import (
 	"context"
 	"fmt"
+	"strconv"
 
 	"github.com/DavidHODs/hackernews/graph/generated"
 	"github.com/DavidHODs/hackernews/graph/model"
+	"github.com/DavidHODs/hackernews/internal/links"
 )
 
-func (r *mutationResolver) CreateLink(ctx context.Context, input model.NewLink) (*model.Link, error) {
-	var link model.Link
-	var user model.User  
-	link.Address = input.Address
-	link.Title = input.Title
-	user.Name = "test user"
-	link.User = &user
+// func (r *mutationResolver) CreateLink(ctx context.Context, input model.NewLink) (*model.Link, error) {
+// 	var link model.Link
+// 	var user model.User
+// 	link.Address = input.Address
+// 	link.Title = input.Title
+// 	user.Name = "test user"
+// 	link.User = &user
 
-	return &link, nil
-}
+// 	return &link, nil
+// }
 
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (string, error) {
 	panic(fmt.Errorf("not implemented"))
@@ -56,6 +58,19 @@ func (r *queryResolver) Links(ctx context.Context) ([]*model.Link, error) {
 
 	links = append(links, &dummyLink, &dummyLink2, &dummyLink3)
 	return links, nil
+}
+
+func (r *mutationResolver) CreateLink(ctx context.Context, input model.NewLink) (*model.Link, error) {
+	var link links.Link
+	link.Title = input.Title
+	link.Address = input.Address
+
+	linkID := link.Save()
+	return &model.Link {
+		ID: strconv.FormatInt(linkID, 10),
+		Title: link.Title,
+		Address: link.Address,
+	}, nil
 }
 
 // Mutation returns generated.MutationResolver implementation.

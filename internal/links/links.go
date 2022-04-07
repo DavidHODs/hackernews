@@ -15,7 +15,7 @@ type Link struct {
 }
 
 func (link Link) Save() int64 {
-	stmt, err := database.Db.Prepare("INSERT INTO LINKS(Title, Address) VALUES(?, ?)")
+	stmt, err := database.Db.Prepare("INSERT INTO Links(Title, Address) VALUES(?, ?)")
 	if err != nil {
 		log.Fatal(err)
 	}

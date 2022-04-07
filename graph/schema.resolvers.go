@@ -36,29 +36,29 @@ func (r *mutationResolver) RefreshToken(ctx context.Context, input model.Refresh
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *queryResolver) Links(ctx context.Context) ([]*model.Link, error) {
-	var links []*model.Link
-	dummyLink := model.Link {
-		Title: "first dummy link",
-		Address: "https://dummy.org",
-		User: &model.User{Name: "owner"},
-	}
+// func (r *queryResolver) Links(ctx context.Context) ([]*model.Link, error) {
+// 	var links []*model.Link
+// 	dummyLink := model.Link {
+// 		Title: "first dummy link",
+// 		Address: "https://dummy.org",
+// 		User: &model.User{Name: "owner"},
+// 	}
 
-	dummyLink2 := model.Link {
-		Title: "second dummy link",
-		Address: "https://dummy1.org",
-		User: &model.User{Name: "admin"},
-	}
+// 	dummyLink2 := model.Link {
+// 		Title: "second dummy link",
+// 		Address: "https://dummy1.org",
+// 		User: &model.User{Name: "admin"},
+// 	}
 
-	dummyLink3 := model.Link {
-		Title: "third dummy link",
-		Address: "https://dummy2.org",
-		User: &model.User{Name: "user"},
-	}
+// 	dummyLink3 := model.Link {
+// 		Title: "third dummy link",
+// 		Address: "https://dummy2.org",
+// 		User: &model.User{Name: "user"},
+// 	}
 
-	links = append(links, &dummyLink, &dummyLink2, &dummyLink3)
-	return links, nil
-}
+// 	links = append(links, &dummyLink, &dummyLink2, &dummyLink3)
+// 	return links, nil
+// }
 
 func (r *mutationResolver) CreateLink(ctx context.Context, input model.NewLink) (*model.Link, error) {
 	var link links.Link
@@ -71,6 +71,17 @@ func (r *mutationResolver) CreateLink(ctx context.Context, input model.NewLink) 
 		Title: link.Title,
 		Address: link.Address,
 	}, nil
+}
+
+func (r *queryResolver) Links(ctx context.Context) ([]*model.Link, error) {
+	var resultLinks []*model.Link
+	var dbLinks []links.Link
+	dbLinks = links.GetAll()
+	for _, link := range dbLinks {
+		resultLinks = append(resultLinks, &model.Link{ID: link.ID, Title: link.Title, Address: link.Address})
+	}
+
+	return resultLinks, nil
 }
 
 // Mutation returns generated.MutationResolver implementation.

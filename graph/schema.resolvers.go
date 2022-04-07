@@ -11,6 +11,8 @@ import (
 	"github.com/DavidHODs/hackernews/graph/generated"
 	"github.com/DavidHODs/hackernews/graph/model"
 	"github.com/DavidHODs/hackernews/internal/links"
+	"github.com/DavidHODs/hackernews/internal/users"
+	"github.com/DavidHODs/hackernews/pkg/jwt"
 )
 
 // func (r *mutationResolver) CreateLink(ctx context.Context, input model.NewLink) (*model.Link, error) {
@@ -25,7 +27,15 @@ import (
 // }
 
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (string, error) {
-	panic(fmt.Errorf("not implemented"))
+	var user users.User
+	user.Username = input.Username
+	user.Password = input.Password
+	user.Create()
+	token, err := jwt.GenerateToken(user.Username)
+	if err != nil{
+		return "", err
+	}
+	return token, nil
 }
 
 func (r *mutationResolver) Login(ctx context.Context, input model.Login) (string, error) {
